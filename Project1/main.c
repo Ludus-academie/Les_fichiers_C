@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAILLENOMFICHIER 100
+#define TAILLEENTETE 40
 
 
 //Les fichiers
@@ -20,7 +20,7 @@
                     Repositioning operations (fseek, fsetpos, rewind) affects the next input operations, but output operations move the position back to the end of file. The file is created if it does not exist.
 
 */
-//int saisie(char cSaisie[100], int nTaille);
+
 
 
 
@@ -95,9 +95,9 @@ int main()
         int nVal[25];
         char sec1, sec2;
         char sep;
-        char cEntete[40];
+        char cEntete[TAILLEENTETE]; 
 
-        fgets(cEntete, 40, fEntree);//on lit la première chaine de caractère dans le fichier
+        fgets(cEntete, TAILLEENTETE, fEntree);//on lit la première chaine de caractère dans le fichier
         fseek(fEntree, sizeof(char)+1, SEEK_CUR);//la fonction fseek permet de se déplacer dans le fichier octet par octet à l'aide d'un curseur de un octet
         //SEEK_CUR définit ici à partir de la position courante du curseur.
         //Dans notre cas nous sommes à la position 12 loongueur de la chaine "Fichier map\n" incluant \n
