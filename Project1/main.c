@@ -30,110 +30,110 @@ int main()
    
     FILE* fSortie = NULL;//Descripteur de fichier
     FILE* fEntree = NULL;//Descripteur de fichier
-
-    //Les fichiers txt
-    char *cNomFichier= (char*)malloc(TAILLENOMFICHIER * sizeof(char));
-    char *cSaisie= (char*)malloc(TAILLENOMFICHIER * sizeof(char));//chaine de saisie
-    int nVal = 0;
-    int nOccurence = 0;
-    int nNombreVal = 0;
-    
+   
     errno_t err;
   
-    //On écrit dans le fichier (écriture formatée)
-    //Saisir le nom du fichier enregistré sur le disque.
-    printf("Donnez le nom du fichier a creer (ajoutez l'extension .txt): \n");
-    scanf_s("%s", cSaisie,TAILLENOMFICHIER);
+    int nMap[5][5] = { {0,0,0,0,0},
+                       {0,0,0,0,0},
+                       {1,1,1,1,1},
+                       {2,2,2,2,2},
+                       {3,3,3,3,3} };
 
-    //on copie le nom du fichier pour le path dans une variable char*, pour sécuriser le chemin
-    if(cSaisie!=NULL && cNomFichier!=NULL)
-        strcpy_s(cNomFichier,TAILLENOMFICHIER, cSaisie);
+    //Les fichiers txt
+    //Dans cet exemple, nous allons écrire la réprésentation d'une map qui pourra être utilisé pour modèle de données à la construction d'un map pour notre jeu SDL2
 
 
-   
-    //on sécurise les pointeurs
-    if (cNomFichier != NULL) {
+    //Ecriture d'une map dans un fichier txt
+    //Ouverture en ecriture
+    //pour manipuler un fichier nous utilisons un descripteur de fichier, celui-ci nous aide à naviguer dans le fichier
+    if (err = fopen_s(&fSortie, "map.txt", "w") != 0) {
 
-        //Pour ouvrir un fichier dans un mode donné, on utilise un descripteur de fichier(celui-ci va nous aider à naviguer dans le fichier)
-        //Ouverture en écriture, si le fichier n'existe pas il le cré, attention il écrase son contenu à chaque création
-        if (err = fopen_s(&fSortie, cNomFichier, "w") != 0) {
-            fprintf_s(stderr, "Erreur ouverture fichier :%d\n",err );
-            //Gestion des erreurs
+        fprintf_s(stderr, "Erreur ouverture fichier :%d\n", err);
+        //Gestion des erreurs
+    }
+    else {
+
+        int i, j;
+        //On écrit dans le fichier de manière formatée avec fprintf_s
+        //le format est composé de séquences avec { et } et de séparateurs avec ,
+        fprintf_s(fSortie, "{");
+        for (i = 0; i < 5; i++) {
+
+            for (j = 0; j < 5; j++) {
+                fprintf_s(fSortie, "%d", nMap[i][j]);
+                fprintf_s(fSortie, ",");
+            }
+            if (i < 4)
+                fprintf_s(fSortie, "\n");
         }
-        else {
-
-
-
-            do {
-                //on écrit dans le fichier des valeurs numériques à la volée.
-                printf("donnez un entier : \n");
-                scanf_s("%d", &nVal);//Saisie de notre entier
-
-                if (nVal != 0) {
-                    //le 0 n'est pas écrit dans le fichier
-                    //fprintf_s fonction permettant d'écrire dans le fichier dans un format donné.
-                    fprintf_s(fSortie,"%d\n",nVal);//Ecriture formatée dans le fichier
-                    nOccurence++;//Compte le nombre de valeurs saisies
-                }
-                //condition de sortie 0
-            } while (nVal);
-
-
-        }
-
+        fprintf_s(fSortie, "}");
     }
 
+
+    //après utilisation du fichier on ferme le descripteur de fichier
     if (fSortie)
         fclose(fSortie);//fermeture du descripteur de fichier
 
-   
- 
-    
 
-    //Lecture du fichier
-    //On réalise une lecture formatée
-    
-    //on saisie le nom du fichier à lire avec l'éxtension .txt
-    printf("Donnez le nom du fichier a lister (ajoutez l'extension .txt) : \n");
-    scanf_s("%s", cSaisie, TAILLENOMFICHIER);
+    //lecture map du fichier
+    // 
+     //Ouverture en lecture
+    if (err = fopen_s(&fEntree, "map.txt", "r") != 0) {
 
-    //on copie le nom du fichier pour le path dans une variable char*, pour sécuriser le chemin
-    if (cSaisie != NULL && cNomFichier != NULL)
-        strcpy_s(cNomFichier, TAILLENOMFICHIER, cSaisie);
+        fprintf_s(stderr, "Erreur ouverture fichier :%d\n", err);
+        //Gestion des erreurs
+    }
+    else {
 
-   
 
-    //on sécurise les pointeurs
-    if (cNomFichier != NULL) {
+        int nVal[25];
+        char sec1, sec2;
+        char sep;
 
-        //Ouverture en lecture
-        if (err = fopen_s(&fEntree, cNomFichier, "r") != 0) {
-
-            fprintf_s(stderr, "Erreur ouverture fichier :%d\n", err);
-            //Gestion des erreurs
+        //la lecture formatée est réalisée avec la fonction fscanf_s
+        //Cette fonctions permet de lire dans un fichier en fonction d'un format (int %d,char %c....)
+        fscanf_s(fEntree, "%c", &sec1,1);//// lecture formatée dans le fichier, affectation de l'opérateur de séquence
+        for (int i = 0; i < 25; i++) {
+            fscanf_s(fEntree, "%d", &nVal[i]);// lecture formatée dans le fichier, affectation de la valeur dans nVal
+            fscanf_s(fEntree, "%c", &sep,1);// lecture formatée dans le fichier, affectation du séparateur dans sep
         }
-        else {
+        fscanf_s(fEntree, "%c", &sec2,1);// lecture formatée dans le fichier, affectation de l'opérateur de séquence
 
-            //Connaissant le nombre d'occurrences dans le fichier, on lit tant que j'ai une occurrence à lire.
-            while (nNombreVal < nOccurence) {
+        //Algo pour l'affichage à l'écran de la réprésentation en données de la map
+        //On copie le tableau de val (nVal) dans le tableau 2d map
+        //le tableau map correspond à la représentation de la map qui sera utilisée pour la création de la map.
+        int map[5][5];
+        int c = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                map[i][j] = nVal[c];
+                c++;
 
-                int ret=fscanf_s(fEntree, "%d", &nVal);// lecture formatée dans le fichier, affectation de la valeur lue dans nVal, ici on lit un entier
-                printf("%d", nVal);//Affichage a l'ecran de la valeur
-                nNombreVal++;
             }
 
         }
 
+        //on affiche la map formaté dans la console 
+        printf("%c", sec1);
+        printf("\n");
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                printf("%d", map[i][j]);//Affichage a l'ecran de la valeur
+                printf("%c", sep);
+            }
+            printf("\n");
+        }
+        printf("%c", sec2);
+
+
+
+
+
     }
 
-    //Après manipulation du fichier
-    //on ferme le descripteur de fichier
-    if(fEntree)
+    //après utilisaion du fichier, on ferme le descripteur de fichier
+    if (fEntree)
         fclose(fEntree);//fermeture du descripteur fichier
-
-    //on libère les allocations dynamiques de la mémoire pour les chaines.
-      free(cSaisie);
-      free(cNomFichier);
 
 
       
