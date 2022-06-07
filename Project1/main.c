@@ -118,7 +118,7 @@ int main()
             //Connaissant le nombre d'occurrences dans le fichier, on lit tant que j'ai une occurrence à lire.
             while (nNombreVal < nOccurence) {
 
-                int ret=fscanf(fEntree, "%d", &nVal);// lecture formatée dans le fichier, affectation de la valeur lue dans nVal, ici on lit un entier
+                int ret=fscanf_s(fEntree, "%d", &nVal);// lecture formatée dans le fichier, affectation de la valeur lue dans nVal, ici on lit un entier
                 printf("%d", nVal);//Affichage a l'ecran de la valeur
                 nNombreVal++;
             }
