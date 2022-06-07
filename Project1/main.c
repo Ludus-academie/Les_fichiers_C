@@ -53,6 +53,12 @@ int main()
     }
     else {
 
+        //on écrit une chaine dans le fichier
+        //fputs pour écrire une chaine, fputc pour écrire un caractère.
+        //On ajoute une en-tête à notre fichier 
+        fputs("Fichier map\n",fSortie);
+        fputs("\n", fSortie);
+
         int i, j;
         //On écrit dans le fichier de manière formatée avec fprintf_s
         //le format est composé de séquences avec { et } et de séparateurs avec ,
@@ -89,6 +95,17 @@ int main()
         int nVal[25];
         char sec1, sec2;
         char sep;
+        char cEntete[40];
+
+        fgets(cEntete, 40, fEntree);//on lit la première chaine de caractère dans le fichier
+        fseek(fEntree, sizeof(char)+1, SEEK_CUR);//la fonction fseek permet de se déplacer dans le fichier octet par octet à l'aide d'un curseur de un octet
+        //SEEK_CUR définit ici à partir de la position courante du curseur.
+        //Dans notre cas nous sommes à la position 12 loongueur de la chaine "Fichier map\n" incluant \n
+        //On se déplace de sizeof(char)+1, soit 2 octets 
+        //on se position sur le 14eme octet, soit {
+        //https://www.cplusplus.com/reference/cstdio/fseek/ 
+
+        //Puis on passe à la lecture de la suite du fichier
 
         //la lecture formatée est réalisée avec la fonction fscanf_s
         //Cette fonctions permet de lire dans un fichier en fonction d'un format (int %d,char %c....)
@@ -124,10 +141,6 @@ int main()
             printf("\n");
         }
         printf("%c", sec2);
-
-
-
-
 
     }
 
