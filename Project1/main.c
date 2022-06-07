@@ -57,8 +57,7 @@ int main()
         //Pour ouvrir un fichier dans un mode donné, on utilise un descripteur de fichier(celui-ci va nous aider à naviguer dans le fichier)
         //Ouverture en écriture, si le fichier n'existe pas il le cré, attention il écrase son contenu à chaque création
         if (err = fopen_s(&fSortie, cNomFichier, "w") != 0) {
-
-            fprintf_s(stderr, "Erreur ouverture fichier :%s\n", strerror(err));
+            fprintf_s(stderr, "Erreur ouverture fichier :%d\n",err );
             //Gestion des erreurs
         }
         else {
@@ -110,7 +109,7 @@ int main()
         //Ouverture en lecture
         if (err = fopen_s(&fEntree, cNomFichier, "r") != 0) {
 
-            fprintf_s(stderr, "Erreur ouverture fichier :%s\n", strerror(err));
+            fprintf_s(stderr, "Erreur ouverture fichier :%d\n", err);
             //Gestion des erreurs
         }
         else {
