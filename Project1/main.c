@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAILLEENTETE 40
+#define TAILLEBUFFER 40
 
 
 //Les fichiers
@@ -80,9 +80,9 @@ int main()
     if (fSortie)
         fclose(fSortie);//fermeture du descripteur de fichier
 
-
+   
     //lecture map du fichier
-    // 
+    // Dans ce cas nous faisons une lecture du fichier à la volée, sans prendre le format de construction en considération.
      //Ouverture en lecture
     if (err = fopen_s(&fEntree, "map.txt", "r") != 0) {
 
@@ -91,58 +91,24 @@ int main()
     }
     else {
 
+        char cEntete[TAILLEBUFFER]; 
+       
 
-        int nVal[25];
-        char sec1, sec2;
-        char sep;
-        char cEntete[TAILLEENTETE]; 
+        while (!feof(fEntree)) { //feof "file end of file", feof renvoie fin de fichier
+            //ici on test tant que pas fin de fichier
+            //on lit le fichier à la volée
 
-        fgets(cEntete, TAILLEENTETE, fEntree);//on lit la première chaine de caractère dans le fichier
-        fseek(fEntree, sizeof(char)+1, SEEK_CUR);//la fonction fseek permet de se déplacer dans le fichier octet par octet à l'aide d'un curseur de un octet
-        //SEEK_CUR définit ici à partir de la position courante du curseur.
-        //Dans notre cas nous sommes à la position 12 loongueur de la chaine "Fichier map\n" incluant \n
-        //On se déplace de sizeof(char)+1, soit 2 octets 
-        //on se position sur le 14eme octet, soit {
-        //https://www.cplusplus.com/reference/cstdio/fseek/ 
+            fgets(cEntete, TAILLEBUFFER, fEntree);
 
-        //Puis on passe à la lecture de la suite du fichier
-
-        //la lecture formatée est réalisée avec la fonction fscanf_s
-        //Cette fonctions permet de lire dans un fichier en fonction d'un format (int %d,char %c....)
-        fscanf_s(fEntree, "%c", &sec1,1);//// lecture formatée dans le fichier, affectation de l'opérateur de séquence
-        for (int i = 0; i < 25; i++) {
-            fscanf_s(fEntree, "%d", &nVal[i]);// lecture formatée dans le fichier, affectation de la valeur dans nVal
-            fscanf_s(fEntree, "%c", &sep,1);// lecture formatée dans le fichier, affectation du séparateur dans sep
-        }
-        fscanf_s(fEntree, "%c", &sec2,1);// lecture formatée dans le fichier, affectation de l'opérateur de séquence
-
-        //Algo pour l'affichage à l'écran de la réprésentation en données de la map
-        //On copie le tableau de val (nVal) dans le tableau 2d map
-        //le tableau map correspond à la représentation de la map qui sera utilisée pour la création de la map.
-        int map[5][5];
-        int c = 0;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                map[i][j] = nVal[c];
-                c++;
-
-            }
-
+            printf("%s", cEntete);
         }
 
-        //on affiche la map formaté dans la console 
-        printf("%c", sec1);
-        printf("\n");
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                printf("%d", map[i][j]);//Affichage a l'ecran de la valeur
-                printf("%c", sep);
-            }
-            printf("\n");
-        }
-        printf("%c", sec2);
+
 
     }
+    
+
+
 
     //après utilisaion du fichier, on ferme le descripteur de fichier
     if (fEntree)
